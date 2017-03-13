@@ -109,6 +109,11 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, 'static'),
+        )
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 AUTH_USER_MODEL = 'profiles.CustomUser'
 
 REST_FRAMEWORK = {
@@ -123,3 +128,4 @@ REST_FRAMEWORK = {
 }
 
 CSRF_COOKIE_SECURE = False
+
