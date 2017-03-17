@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import CustomUser, Profile
@@ -8,7 +8,7 @@ from .permissions import IsOwnerOrNumb
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
 from .authentication import CsrfExemptSessionAuthentication
-from rest_framework.authentication import BasicAuthentication
+from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth import login, logout, authenticate
 import json
 
@@ -18,7 +18,7 @@ import json
 
 class UserView(APIView):
     serializer_class = UserSerializer
-    # authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+    permission_classes = (AllowAny,)
     lookup_field = 'email'
 
     def get(self, request, format=None):
@@ -38,7 +38,7 @@ class UserView(APIView):
 
 class ProfileListView(APIView):
     serializer_class = ProfileSerializer
-    authentication_classes = (BasicAuthentication,)
+    # authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated, )
 
     def get(self, request, format=None):
@@ -56,7 +56,7 @@ class ProfileListView(APIView):
 class ProfileDetailView(APIView):
     # queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    authentication_classes = (BasicAuthentication, )
+    # authentication_classes = (TokenAuthentication, )
     permission_classes = (IsAuthenticated, IsOwnerOrNumb)
 
     def get_object(self, pk):
@@ -78,7 +78,7 @@ class ProfileDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
-    # serializer_class = UserSerializer
+    permission_classes = (AllowAny,)
 
     def post(self, request, format=None):
         data = json.loads(request.body.decode('utf-8'))
@@ -105,3 +105,7 @@ class LogoutView(APIView):
         return Response({}, status=status.HTTP_204_NO_CONTENT)
 
 
+class ListView(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = (IsAuthenticated,)
