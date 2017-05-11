@@ -34,15 +34,33 @@ class UserManager(BaseUserManager):
 
 class ProfileQuerySet(models.QuerySet):
 
-    def python(self):
-        return self.filter(Q(skills__skill__icontains='python') |
-                           Q(skills__skill__icontains='django') |
-                           Q(skills__skill__icontains='flask')  |
-                           Q(skills__skill__icontains='edge')
-                           )
+    def filter_by_query_params(self, request):
+      profiles = self
+      profile_str = request.GET.get('query')
 
-    def javascript(self):
-        return self.filter(Q(skills__skill__icontains='javascript') |
-                           Q(skills__skill__icontains='angularjs')  |
-                           Q(skills__skill__icontains='ionic')
-                           )
+      if profile_str:
+        profiles = profiles.filter(
+            Q(name__icontains=profile_str.strip()) | Q(skills__skill__icontains=profile_str.strip())
+            )
+
+      return profiles
+
+class SkillsetQueryset(models.QuerySet):
+
+    def filter_by_query_params(self, request):
+      skills = self
+      skill_str = request.GET.get('query')
+
+      if skill_str:
+        skills = skills.filter(
+            Q(skill__icontains=skill_str.strip()))
+
+      return skills
+
+    def check_unique_together(self, profile, skill):
+
+      try:
+        self.get(profile=profile, skill=skill)
+        raise ValueError("This profile has already listed this skill.")
+      except self.model.DoesNotExist:
+        return True

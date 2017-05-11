@@ -55,3 +55,14 @@ class ProfileSerializer(serializers.ModelSerializer):
     exclusions = super(ProfileSerializer, self).get_validation_exclusions()
 
     return exclusions + ['user']
+
+  def update(self, instance, validated_data):
+    instance.name = validated_data.get('name', instance.name)
+    instance.email = validated_data.get('email', instance.email)
+    instance.designation = validated_data.get('designation', instance.designation)
+    instance.location = validated_data.get('location', instance.location)
+    instance.current_ctc = validated_data.get('current_ctc', instance.current_ctc)
+    instance.expected_ctc = validated_data.get('expected_ctc', instance.expected_ctc)
+    instance.notice_period = validated_data.get('notice_period', instance.notice_period)
+    instance.save()
+    return instance

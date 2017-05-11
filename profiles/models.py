@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
-from .managers import UserManager, ProfileQuerySet
+from .managers import UserManager, ProfileQuerySet, SkillsetQueryset
 
 # Create your models here.
 
@@ -51,17 +51,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 class Profile(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='profiles')
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=40,)
     email = models.EmailField()
     designation = models.CharField(max_length=20, choices=CHOICES,)
     location = models.CharField(max_length=20,)
     current_ctc = models.DecimalField(max_digits=3, decimal_places=2,)
     expected_ctc = models.DecimalField(max_digits=3, decimal_places=2,)
-    notice_period = models.IntegerField(default=30)
+    notice_period = models.IntegerField(default=30,)
     # availibility = models.CharField(max_length=5, choices=AVAIL)
     resume = models.FileField(upload_to='docs/', blank=True)
     recording = models.FileField(upload_to='media/', blank=True)
-    recording_optional = models.FileField(blank=True)
+    recording_optional = models.FileField(upload_to='media/', blank=True)
 
     objects = ProfileQuerySet.as_manager()
 
@@ -73,11 +73,17 @@ class Profile(models.Model):
     def get_absolute_url(self):
         return "/profiles/%i/" % self.id
 
+    @property
+    def get_user(self):
+        return self.user.email
+
 
 class Skillset(models.Model):
     profile = models.ForeignKey(Profile, related_name='skills')
     skill = models.CharField(max_length=10)
     exp = models.IntegerField()
+
+    objects = SkillsetQueryset.as_manager()
 
     class Meta:
         unique_together = ('profile', 'skill',)
