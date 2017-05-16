@@ -1,10 +1,6 @@
-Django==1.8
-django-cors-headers==2.0.2
-djangorestframework==3.5.3
-djangorestframework-jwt==1.9.0
-gunicorn==19.7.0
-heroku==0.1.4
-psycopg2==2.7.1
-PyJWT==1.4.2
-python-dateutil==1.5
-requests==2.13.0
+appdirs==1.4.3
+djangorestframework==3.6.3
+packaging==16.8
+pyparsing==2.2.0
+python-raven==0.8.1
+six==1.10.0
