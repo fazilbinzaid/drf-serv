@@ -1,5 +1,6 @@
 appdirs==1.4.3
 contextlib2==0.5.5
+Django==1.11.1
 django-cors-headers==2.0.2
 djangorestframework==3.6.3
 djangorestframework-jwt==1.10.0
@@ -8,5 +9,6 @@ psycopg2==2.7.1
 PyJWT==1.5.0
 pyparsing==2.2.0
 python-raven==0.8.1
+pytz==2017.2
 raven==6.0.0
 six==1.10.0
